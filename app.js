@@ -24,10 +24,12 @@ mongoose
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Root route '/'
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
+// Route to create Post '/posts'
 app.post("/posts", [getRequestInfo, isTokenValid], async (req, res) => {
   try {
     const post = await Post.create(req.body);
@@ -37,6 +39,7 @@ app.post("/posts", [getRequestInfo, isTokenValid], async (req, res) => {
   }
 });
 
+// Route to find all Posts '/posts'
 app.get("/posts", isTokenValid, async (req, res) => {
   try {
     const allPost = await Post.find({});
@@ -46,6 +49,7 @@ app.get("/posts", isTokenValid, async (req, res) => {
   }
 });
 
+// Route to find particular Post '/posts/:id'
 app.get("/posts/:id", isTokenValid, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -55,6 +59,7 @@ app.get("/posts/:id", isTokenValid, async (req, res) => {
   }
 });
 
+// Route to delete Post '/posts/:id'
 app.delete("/posts/:id", isTokenValid, async (req, res) => {
   try {
     await Post.findByIdAndRemove(req.params.id);
@@ -64,6 +69,7 @@ app.delete("/posts/:id", isTokenValid, async (req, res) => {
   }
 });
 
+// Route to update Post '/posts/:id'
 app.put("/posts/:id", isTokenValid, async (req, res) => {
   try {
     await Post.findByIdAndUpdate(req.params.id, req.body);
@@ -73,6 +79,7 @@ app.put("/posts/:id", isTokenValid, async (req, res) => {
   }
 });
 
+// Route to create comments on Post '/posts/:id/comments'
 app.post("/posts/:id/comments", isTokenValid, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
@@ -86,6 +93,7 @@ app.post("/posts/:id/comments", isTokenValid, async (req, res) => {
   }
 });
 
+// Route to likes the Post '/posts/:id/?likes=true'
 app.patch("/posts/:id", isTokenValid, async (req, res) => {
   try {
     if (req.query.likes) {
@@ -112,6 +120,8 @@ app.patch("/posts/:id", isTokenValid, async (req, res) => {
 });
 
 /// ==== Messages Routes === ///
+
+// Route to create the users '/users'
 app.post("/users", async (req, res) => {
   try {
     const user = await User.create(req.body);
@@ -122,6 +132,7 @@ app.post("/users", async (req, res) => {
   }
 });
 
+// Route to find all the users '/users'
 app.get("/users", isTokenValid, async (req, res) => {
   try {
     const users = await User.find({});
@@ -131,6 +142,7 @@ app.get("/users", isTokenValid, async (req, res) => {
   }
 });
 
+// Route to send message to different user '/users/:id/?message=true'
 app.patch("/users/:id", isTokenValid, async (req, res) => {
   try {
     if (req.query.message) {
@@ -172,6 +184,7 @@ app.patch("/users/:id", isTokenValid, async (req, res) => {
   }
 });
 
+// Route to find all the messages of a users '/users/:id/messages'
 app.get("/users/:id/messages", isTokenValid, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
