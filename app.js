@@ -9,7 +9,7 @@ const url = "mongodb://localhost/posts";
 const Post = require("./models/post");
 const Comment = require("./models/comment");
 const User = require("./models/user");
-const { isTokenValid } = require("./middleware/index");
+const { isTokenValid, getRequestInfo } = require("./middleware/index");
 
 mongoose
   .connect(url, {
@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
   res.send("Hello world");
 });
 
-app.post("/posts", isTokenValid, async (req, res) => {
+app.post("/posts", [getRequestInfo, isTokenValid], async (req, res) => {
   try {
     const post = await Post.create(req.body);
     res.send({ msg: "Post created" });

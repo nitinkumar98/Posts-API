@@ -15,3 +15,14 @@ exports.isTokenValid = (req, res, next) => {
     res.send({ error: "Token is not Available" });
   }
 };
+
+exports.getRequestInfo = (req, res, next) => {
+  const requestHeader = {
+    headers: req.headers,
+    body: req.body,
+    method: req.method,
+    url: req.url,
+  };
+  console.log(requestHeader);
+  next();
+};
