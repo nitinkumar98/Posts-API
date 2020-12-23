@@ -16,7 +16,7 @@ exports.isTokenValid = (req, res, next) => {
   }
 };
 
-exports.getRequestInfo = (req, res, next) => {
+exports.logRequestInfo = (req, res, next) => {
   const requestHeader = {
     headers: req.headers,
     body: req.body,
