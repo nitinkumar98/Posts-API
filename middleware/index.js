@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+
+// for verify token
 exports.isTokenValid = (req, res, next) => {
   const bearerHeader = req.headers["authorization"];
 
@@ -16,6 +18,7 @@ exports.isTokenValid = (req, res, next) => {
   }
 };
 
+// to log request info
 exports.logRequestInfo = (req, res, next) => {
   const requestHeader = {
     headers: req.headers,

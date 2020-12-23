@@ -51,7 +51,7 @@ exports.updatePostById = async (req, res) => {
   }
 };
 
-// for commenting on post
+// to commenting on posts
 exports.toCommentOnPost = async (req, res) => {
   try {
     await Comment.create(req.body);
@@ -61,7 +61,7 @@ exports.toCommentOnPost = async (req, res) => {
   }
 };
 
-// for liking the post
+// to like the post
 exports.toLikeThePost = async (req, res) => {
   try {
     if (req.body.like) {
@@ -90,7 +90,7 @@ exports.toLikeThePost = async (req, res) => {
   }
 };
 
-//for getting all comments of the post
+//for getting all comments of the specific post
 exports.getAllCommentsOfPost = async (req, res) => {
   try {
     const postComments = await Comment.find({ onPost: req.params.id })

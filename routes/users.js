@@ -22,7 +22,7 @@ exports.findAllUsers = async (req, res) => {
   }
 };
 
-// for sending the messages to users
+// to sending the messages to users
 exports.sendMessagesToUsers = async (req, res) => {
   try {
     if (req.query.message) {
@@ -69,7 +69,7 @@ exports.sendMessagesToUsers = async (req, res) => {
   }
 };
 
-// for getting all messages of the user
+// to getting all messages of specific user
 exports.getAllMessagesOfUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

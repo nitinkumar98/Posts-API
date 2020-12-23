@@ -99,7 +99,7 @@ app.get("/users/:id/messages", isTokenValid, (req, res) => {
   getAllMessagesOfUser(req, res);
 });
 
-//Listening Sever
+//Listening Sever at port 8080
 app.listen(port, () => {
   console.log(`Server is running at ${port}`);
 });
