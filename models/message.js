@@ -14,6 +14,7 @@ const messageSchema = new mongoose.Schema(
       ref: "User",
       index: true,
     },
+    roomId: String,
   },
   { timestamps: true }
 );

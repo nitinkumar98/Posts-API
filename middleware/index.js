@@ -9,8 +9,15 @@ exports.isTokenValid = async (req, res, next) => {
     const bearerToken = bearerHeader.split(" ")[1];
     req.token = bearerToken;
     try {
-      jwt.verify(req.token, process.env.ACCESS_TOKEN_SECRET);
-      next();
+      const decodedToken = jwt.verify(
+        req.token,
+        process.env.ACCESS_TOKEN_SECRET
+      );
+      const user = User.findById(decodedToken.id);
+      if (user) next();
+      else {
+        res.json({ error: "User doesn't exit for this token" });
+      }
     } catch (error) {
       res.send({ error: error });
     }

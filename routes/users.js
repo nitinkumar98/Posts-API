@@ -26,11 +26,12 @@ exports.findAllUsers = async (req, res) => {
 // to sending the messages to users
 exports.sendMessagesToUsers = async (req, res) => {
   try {
-    if (req.body.message) {
-      req.body.sendBy = req.params.id;
-      await Message.create(req.body);
-      res.send({ msg: "Message Send Successfully!!" });
-    }
+    req.body.sendBy = req.params.id;
+    const tempId = req.params.id + req.body.receiveBy;
+
+    req.body.roomId = tempId.split("").sort().join("");
+    await Message.create(req.body);
+    res.send({ msg: "Message Send Successfully!!" });
   } catch (error) {
     res.send({ error: error });
   }
@@ -42,16 +43,26 @@ exports.getAllMessagesOfUser = async (req, res) => {
     const rawMessages = await Message.aggregate([
       {
         $match: {
-          $expr: {
-            $or: [{ sendBy: req.params.id }, { receiveBy: req.params.id }],
-          },
+          $or: [
+            { sendBy: mongoose.Types.ObjectId(req.params.id) },
+            { receiveBy: mongoose.Types.ObjectId(req.params.id) },
+          ],
         },
       },
-      { $project: { _id: 0, text: 1, sendBy: 1, receiveBy: 1, createdAt: 1 } },
+      {
+        $project: {
+          _id: 0,
+          text: 1,
+          sendBy: 1,
+          receiveBy: 1,
+          createdAt: 1,
+          roomId: 1,
+        },
+      },
       { $sort: { createdAt: -1 } },
       {
         $group: {
-          _id: req.params.id,
+          _id: "$roomId",
           text: { $first: "$text" },
           sendBy: { $first: "$sendBy" },
           receiveBy: { $first: "$receiveBy" },
@@ -60,10 +71,8 @@ exports.getAllMessagesOfUser = async (req, res) => {
       },
     ]);
 
-    const message = await Message.populate(rawMessages, { path: "sendBy" });
-
-    res.send({ msg: message });
+    res.send({ msg: rawMessages });
   } catch (error) {
-    res.send({ error: "nothing" });
+    res.send({ error: error });
   }
 };
