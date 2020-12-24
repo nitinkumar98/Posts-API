@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const Message = require("../models/message");
 const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
 
 // for creating the new user
 exports.createNewUser = async (req, res) => {

@@ -14,10 +14,8 @@ exports.isTokenValid = async (req, res, next) => {
         process.env.ACCESS_TOKEN_SECRET
       );
       const user = User.findById(decodedToken.id);
-      if (user) next();
-      else {
-        res.json({ error: "User doesn't exit for this token" });
-      }
+      if (!user) throw new error("User doesn't exit for this token");
+      next();
     } catch (error) {
       res.send({ error: error });
     }
