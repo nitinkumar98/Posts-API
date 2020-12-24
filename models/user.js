@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 
 // user schema
 const userSchema = new mongoose.Schema({
-  name: String,
-  messages: [{ type: Object, default: {} }],
+  name: {
+    type: String,
+    unique: true,
+  },
 });
 
 //exports User model

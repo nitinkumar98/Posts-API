@@ -1,21 +1,22 @@
 const mongoose = require("mongoose");
 
-// comment schema
-const commentSchema = new mongoose.Schema(
+// message schema
+const messageSchema = new mongoose.Schema(
   {
     text: String,
-    commentedBy: {
+    sendBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      index: true,
     },
-    onPost: {
+    receiveBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Post",
+      ref: "User",
       index: true,
     },
   },
   { timestamps: true }
 );
 
-// exports Comment model
-module.exports = mongoose.model("Comment", commentSchema);
+// exports message schema
+module.exports = mongoose.model("Message", messageSchema);

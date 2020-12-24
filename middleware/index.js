@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/user");
 
 // for verify token
-exports.isTokenValid = (req, res, next) => {
+exports.isTokenValid = async (req, res, next) => {
   const bearerHeader = req.headers["authorization"];
 
   if (typeof bearerHeader !== "undefined") {

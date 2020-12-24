@@ -28,6 +28,7 @@ mongoose
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    useCreateIndex: true,
   })
   .catch((error) => {
     res.send({ error: error });
@@ -89,8 +90,8 @@ app.get("/users", isTokenValid, (req, res) => {
   findAllUsers(req, res);
 });
 
-// Route to send message to different user '/users/:id/?message=true'
-app.patch("/users/:id/", isTokenValid, (req, res) => {
+// Route to send message to different user '/users/:id/messages'
+app.patch("/users/:id/messages", isTokenValid, (req, res) => {
   sendMessagesToUsers(req, res);
 });
 

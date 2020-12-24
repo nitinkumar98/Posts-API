@@ -54,6 +54,7 @@ exports.updatePostById = async (req, res) => {
 // to commenting on posts
 exports.toCommentOnPost = async (req, res) => {
   try {
+    req.body.onPost = req.params.id;
     await Comment.create(req.body);
     res.send({ msg: "Comments added successfully to the post" });
   } catch (error) {
@@ -93,9 +94,9 @@ exports.toLikeThePost = async (req, res) => {
 //for getting all comments of the specific post
 exports.getAllCommentsOfPost = async (req, res) => {
   try {
-    const postComments = await Comment.find({ onPost: req.params.id })
-      .populate("commentedBy")
-      .exec();
+    const postComments = await Comment.find({ onPost: req.params.id }).populate(
+      "commentedBy"
+    );
     res.send({ comments: postComments });
   } catch (error) {
     res.send({ error: error });
