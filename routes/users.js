@@ -28,9 +28,8 @@ exports.findAllUsers = async (req, res) => {
 exports.sendMessagesToUsers = async (req, res) => {
   try {
     req.body.sendBy = req.params.id;
-    const tempId = req.params.id + req.body.receiveBy;
 
-    req.body.roomId = tempId.split("").sort().join("");
+    req.body.roomId = [req.params.id, req.body.receiveBy].sort().join("");
     await Message.create(req.body);
     res.send({ msg: "Message Send Successfully!!" });
   } catch (error) {
@@ -70,6 +69,7 @@ exports.getAllMessagesOfUser = async (req, res) => {
           createdAt: { $first: "$createdAt" },
         },
       },
+      { $sort: { createdAt: -1 } },
     ]);
 
     res.send({ msg: rawMessages });
