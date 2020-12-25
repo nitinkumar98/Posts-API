@@ -1,2 +1,2 @@
 # Posts-API
-## to create new post
+## A nodejs project to implement differnet functions:
