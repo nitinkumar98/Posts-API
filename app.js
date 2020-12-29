@@ -6,6 +6,7 @@ require("dotenv").config();
 const port = 8080;
 const url = "mongodb://localhost/posts";
 const { isTokenValid, logRequestInfo } = require("./middleware/index");
+const { findDataFromOmdbApi } = require("./routes/movies");
 const {
   createNewUser,
   findAllUsers,
@@ -100,6 +101,10 @@ app.get("/users/:id/messages", isTokenValid, (req, res) => {
   getAllMessagesOfUser(req, res);
 });
 
+// === Movies API routes === //
+app.get("/omdb/api", (req, res) => {
+  findDataFromOmdbApi(req, res);
+});
 //Listening Sever at port 8080
 app.listen(port, () => {
   console.log(`Server is running at ${port}`);
