@@ -1,5 +1,6 @@
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const client = require("../services/redis");
 
 // for creating the new post
 exports.createNewPost = async (req, res) => {
@@ -24,8 +25,16 @@ exports.findAllPosts = async (req, res) => {
 // for finding the post by id
 exports.findPostById = async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    res.send({ msg: post });
+    const postCache = await client.getAsync(req.params.id);
+    if (!postCache) {
+      const post = await Post.findById(req.params.id);
+      await client.setAsync(req.params.id, JSON.stringify(post));
+      client.expire(req.params.id, 300);
+      res.send({ post });
+    } else {
+      res.send({ post: JSON.parse(postCache) });
+    }
+    // client.del(req.params.id);
   } catch (error) {
     res.send({ error: error });
   }
@@ -55,7 +64,11 @@ exports.updatePostById = async (req, res) => {
 exports.toCommentOnPost = async (req, res) => {
   try {
     req.body.onPost = req.params.id;
-    await Comment.create(req.body);
+    const cacheComments = await client.getAsync(req.params.id + "comment");
+    //res.send(JSON.parse(cacheComments));
+    const newComment = await Comment.create(req.body);
+    const comment = newComment + cacheComments;
+    await client.setAsync(req.params.id + "commit", JSON.stringify(comment));
     res.send({ msg: "Comments added successfully to the post" });
   } catch (error) {
     res.send({ error: error });
@@ -67,7 +80,7 @@ exports.toLikeThePost = async (req, res) => {
   try {
     if (req.body.like) {
       const userId = req.body.userId;
-      await Post.findByIdAndUpdate(
+      const post = await Post.findByIdAndUpdate(
         req.params.id,
         {
           $inc: { likes: 1 },
@@ -84,6 +97,8 @@ exports.toLikeThePost = async (req, res) => {
         },
         { new: true }
       );
+      await client.setAsync(req.params.id, JSON.stringify(post));
+      client.expire(req.params.id, 300);
       res.send({ msg: "Someone liked the post" });
     }
   } catch (error) {
@@ -94,10 +109,20 @@ exports.toLikeThePost = async (req, res) => {
 //for getting all comments of the specific post
 exports.getAllCommentsOfPost = async (req, res) => {
   try {
-    const postComments = await Comment.find({ onPost: req.params.id }).populate(
-      "commentedBy"
-    );
-    res.send({ comments: postComments });
+    const cacheComments = await client.getAsync(req.params.id + "comment");
+    if (!cacheComments) {
+      const postComments = await Comment.find({
+        onPost: req.params.id,
+      }).populate("commentedBy");
+      await client.setAsync(
+        req.params.id + "comment",
+        JSON.stringify(postComments)
+      );
+      client.expire(req.params.id + "comment", 300);
+      res.send({ comments: postComments });
+    } else {
+      res.send({ comments: JSON.parse(cacheComments) });
+    }
   } catch (error) {
     res.send({ error: error });
   }
