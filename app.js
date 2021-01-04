@@ -32,7 +32,7 @@ mongoose
     useCreateIndex: true,
   })
   .catch((error) => {
-    res.send({ error: error });
+    console.log(error);
   });
 
 app.use(bodyParser.json());
